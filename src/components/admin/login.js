@@ -17,7 +17,7 @@ function Alert(props, type) {
 
 export default function AdminLogin(){
 
-    const [open, setOpen] = useState(true)
+    const [open, setOpen] = useState(false)
     const [success, setSuccess] = useState(true)
     const [message, setMessage] = useState("")
 
