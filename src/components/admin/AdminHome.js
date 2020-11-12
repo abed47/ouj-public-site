@@ -9,7 +9,7 @@ import { useAuth } from "../context/AuthContext";
 
 import { useHistory } from "react-router-dom";
 
-const admin = (props) => {
+const Admin = (props) => {
   const [loading, setLoading] = useState(true);
   const { currentUser } = useAuth();
   const history = useHistory();
@@ -17,6 +17,8 @@ const admin = (props) => {
   useEffect(() => {
     if ("type" in currentUser) {
       setLoading(false);
+    } else {
+      history.push("/admin-login");
     }
   }, []);
 
@@ -28,4 +30,4 @@ const admin = (props) => {
   );
 };
 
-export default admin;
+export default Admin;
