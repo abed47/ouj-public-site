@@ -4,7 +4,7 @@ body {
   height: 100%;
   margin: 0;
   padding: 0;
-  background-color: rgb(226, 226, 226);
+  background-color: rgb(255, 255, 255);
 }
 .container {
   width: 100%;
@@ -39,6 +39,26 @@ body {
   & > * {
     margin: 15px 0 !important;
   }
+}
+
+.d-flex {
+  display: flex;
+}
+
+.w-100 {
+  width: 100;
+}
+
+.h-100 {
+  height: 100;
+}
+
+.justify-content-center {
+  justify-content: center;
+}
+
+.align-items-center {
+  align-items: center;
 }
 
 @media only screen and (max-width: 600px) {

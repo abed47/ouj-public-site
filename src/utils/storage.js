@@ -1,7 +1,7 @@
 let storage = sessionStorage;
 
 function storeNew(key, value) {
-  return storage.setItem(keu, value);
+  return storage.setItem(key, value);
 }
 
 function removeItem(key) {

@@ -1,84 +1,119 @@
-import React from 'react';
-import {useState, useRef} from "react";
+import React from "react";
+import { useState, useRef, useEffect } from "react";
 
-import {fireStore} from '../../utils/firebase/index';
+import { useAuth } from "../context/AuthContext";
+import { useHistory } from "react-router-dom";
 
-import TextField from '@material-ui/core/TextField';
-import Button from '@material-ui/core/Button';
+import { fireStore } from "../../utils/firebase/index";
+import storage from "./../../utils/storage";
+
+import TextField from "@material-ui/core/TextField";
+import Button from "@material-ui/core/Button";
 import Snackbar from "@material-ui/core/Snackbar";
-import MuiAlert  from "@material-ui/lab/Alert";
+import MuiAlert from "@material-ui/lab/Alert";
 
-import logo from '../../assets/images/logo.jpg';
-import '../../assets/styles/Admin.scss';
+import LoadingPage from "../UI/LoadingPage";
+
+import logo from "../../assets/images/logo.jpg";
+import "../../assets/styles/Admin.scss";
 
 function Alert(props, type) {
-    return <MuiAlert elevation={6} variant="filled" {...props} />;
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 
-export default function AdminLogin(){
+export default function AdminLogin() {
+  const [open, setOpen] = useState(false);
+  const [success, setSuccess] = useState(true);
+  const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(true);
 
-    const [open, setOpen] = useState(false)
-    const [success, setSuccess] = useState(true)
-    const [message, setMessage] = useState("")
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
 
-    const [username, setUsername] = useState("")
-    const [password, setPassword] = useState("")
+  const history = useHistory();
 
-    function login(){
-        fireStore.collection("users").where("name","==",username).where("password","==",password).get().then(res => {
-            if(res.docs.length){
-                openAlert(true)                
-                return;
-            }
+  const { currentUser, setCurrentUser, abed } = useAuth();
 
-            openAlert(false)
-        }).catch(err => {
-            console.log(err)
-        })
+  useEffect(() => {
+    if (currentUser && "type" in currentUser) {
+      history.push("/admin");
     }
+    setLoading(false);
+  }, []);
 
-    const handleClose = (event, reason) => {
-        if (reason === 'clickaway') {
+  function login() {
+    fireStore
+      .collection("users")
+      .where("name", "==", username)
+      .where("password", "==", password)
+      .get()
+      .then((res) => {
+        if (res.docs.length) {
+          let doc = res.docs[0].data();
+          setCurrentUser(doc);
+          storage.storeNew("user", JSON.stringify(doc));
+          openAlert(true);
+          history.push("/admin");
           return;
         }
-        setOpen(false);
-      };
 
-    const openAlert = (type) => {
+        openAlert(false);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
 
-        if(type){
-            setSuccess(true);
-            setMessage("Login Success")
-            setOpen(true);
-            return
-        }
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpen(false);
+  };
 
-        setSuccess(false);
-        setMessage("Username Or Password Wrong")
-        setOpen(true);
+  const openAlert = (type) => {
+    if (type) {
+      setSuccess(true);
+      setMessage("Login Success");
+      setOpen(true);
+      return;
     }
 
-    return (
-        <div className="container justify-content-center">
-            <div className="login-container">
-                <img className="logo" src={logo}/>
+    setSuccess(false);
+    setMessage("Username Or Password Wrong");
+    setOpen(true);
+  };
 
-                <TextField id="standard-basic" value={username} onChange={e => setUsername(e.target.value)} label="Username" />
+  return (
+    <div className="container justify-content-center">
+      {loading ? <LoadingPage /> : null}
+      <div className="login-container">
+        <img className="logo" src={logo} />
 
-                <TextField id="standard-basic" value={password} onChange={e => setPassword(e.target.value)}label="Password" />
+        <TextField
+          id="standard-basic"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          label="Username"
+        />
 
-                <Button variant="contained" color="primary" onClick={login}>
-                    Login
-                </Button>
+        <TextField
+          id="standard-basic"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          label="Password"
+        />
 
-                <Snackbar open={open} autoHideDuration={3000}  onClose={handleClose}>
-                    <Alert  onClose={handleClose} severity={success ? "success" : "error"}>
-                        {message}
-                    </Alert>
-                </Snackbar>
-            </div>
+        <Button variant="contained" color="primary" onClick={login}>
+          Login
+        </Button>
 
-
-        </div>
-    );
+        <Snackbar open={open} autoHideDuration={3000} onClose={handleClose}>
+          <Alert onClose={handleClose} severity={success ? "success" : "error"}>
+            {message}
+          </Alert>
+        </Snackbar>
+      </div>
+    </div>
+  );
 }
