@@ -4,6 +4,8 @@ import { useState, useRef, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useHistory } from "react-router-dom";
 
+import { MDBContainer, MDBRow, MDBCol } from "mdbreact";
+
 import { fireStore } from "../../utils/firebase/index";
 import storage from "./../../utils/storage";
 
@@ -85,35 +87,37 @@ export default function AdminLogin() {
   };
 
   return (
-    <div className="container justify-content-center">
-      {loading ? <LoadingPage /> : null}
-      <div className="login-container">
-        <img className="logo" src={logo} />
+    <MDBRow center={true} className="h-100">
+      <MDBCol size="auto" className="d-flex justify-content-center align-items-center">
+        {loading ? <LoadingPage /> : null}
+        <div className="login-container">
+          <img className="logo" src={logo} />
 
-        <TextField
-          id="standard-basic"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          label="Username"
-        />
+          <TextField
+            id="standard-basic"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            label="Username"
+          />
 
-        <TextField
-          id="standard-basic"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          label="Password"
-        />
+          <TextField
+            id="standard-basic"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            label="Password"
+          />
 
-        <Button variant="contained" color="primary" onClick={login}>
-          Login
-        </Button>
+          <Button variant="contained" color="primary" onClick={login}>
+            Login
+          </Button>
 
-        <Snackbar open={open} autoHideDuration={3000} onClose={handleClose}>
-          <Alert onClose={handleClose} severity={success ? "success" : "error"}>
-            {message}
-          </Alert>
-        </Snackbar>
-      </div>
-    </div>
+          <Snackbar open={open} autoHideDuration={3000} onClose={handleClose}>
+            <Alert onClose={handleClose} severity={success ? "success" : "error"}>
+              {message}
+            </Alert>
+          </Snackbar>
+        </div>
+      </MDBCol>
+    </MDBRow>
   );
 }
