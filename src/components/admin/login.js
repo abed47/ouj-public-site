@@ -2,7 +2,6 @@ import React from "react";
 import { useState, useRef, useEffect } from "react";
 
 import { useAuth } from "../context/AuthContext";
-import { useHistory } from "react-router-dom";
 
 import { MDBContainer, MDBRow, MDBCol } from "mdbreact";
 
@@ -19,11 +18,15 @@ import LoadingPage from "../UI/LoadingPage";
 import logo from "../../assets/images/logo.jpg";
 import "../../assets/styles/Admin.scss";
 
+import { useHistory } from "react-router-dom";
+
 function Alert(props, type) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 
-export default function AdminLogin() {
+const AdminLogin = (props) => {
+  const history = useHistory();
+
   const [open, setOpen] = useState(false);
   const [success, setSuccess] = useState(true);
   const [message, setMessage] = useState("");
@@ -31,8 +34,6 @@ export default function AdminLogin() {
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-
-  const history = useHistory();
 
   const { currentUser, setCurrentUser, abed } = useAuth();
 
@@ -120,4 +121,6 @@ export default function AdminLogin() {
       </MDBCol>
     </MDBRow>
   );
-}
+};
+
+export default AdminLogin;

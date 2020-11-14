@@ -1,13 +1,57 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { MDBDataTable, MDBRow, MDBCol } from "mdbreact";
+import { Editor } from "react-draft-wysiwyg";
+import { convertToRaw, convertFromRaw, EditorState } from "draft-js";
+
+//react ui select
+import Select from "@material-ui/core/Select";
+import FormControl from "@material-ui/core/FormControl";
+import InputLabel from "@material-ui/core/InputLabel";
+import MenuItem from "@material-ui/core/MenuItem";
+
+import MultiImageInput from "react-multiple-image-input";
+import AddItemModalContent from "./../components/AddItemModal";
+import Button from "@material-ui/core/Button";
+import TextField from "@material-ui/core/TextField";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import DialogTitle from "@material-ui/core/DialogTitle";
 import Paper from "@material-ui/core/Paper";
 import MatButton from "@material-ui/core/Button";
 import AddIcon from "@material-ui/icons/AddCircle";
+
+//css files
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import "bootstrap-css-only/css/bootstrap.min.css";
 import "mdbreact/dist/css/mdb.css";
-
+import "../../../assets/styles/Admin.scss";
+import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 const ItemsPage = () => {
+  const [addItemModalOpen, setAddItemModalOpen] = useState(false);
+
+  const [itemImages, setItemImages] = useState({});
+  const [itemDescription, setItemDescription] = useState(EditorState.createEmpty());
+  const [itemMeasureUnit, setItemMeasureUnit] = useState();
+
+  const handleAddItemClose = () => {
+    setAddItemModalOpen(false);
+  };
+
+  const handleAddItemOpen = () => {
+    setAddItemModalOpen(true);
+  };
+
+  const handleCreateItem = () => {
+    console.log(convertToRaw(itemDescription.getCurrentContent()));
+    console.log(itemImages);
+  };
+
+  const handleMeasureUnitChange = (e) => {
+    setItemMeasureUnit(e.target.value);
+  };
+
   const data = {
     columns: [
       {
@@ -225,8 +269,8 @@ const ItemsPage = () => {
       <MDBRow around className="my-3">
         <MDBCol size="3" className="p-0"></MDBCol>
         <MDBCol size="3" className="p-0 text-right">
-          <MatButton variant="contained" color="primary">
-            <AddIcon color="white" className="mx-1" /> shlljdsk
+          <MatButton variant="contained" color="primary" onClick={handleAddItemOpen}>
+            <AddIcon className="mx-1" /> Add Item
           </MatButton>
         </MDBCol>
       </MDBRow>
@@ -237,6 +281,61 @@ const ItemsPage = () => {
           </Paper>
         </MDBCol>
       </MDBRow>
+
+      <Dialog open={addItemModalOpen} onClose={handleAddItemClose} aria-labelledby="form-dialog-title">
+        <DialogTitle id="form-dialog-title">Add Item</DialogTitle>
+        <DialogContent>
+          <div className="horizontal-form">
+            <TextField autoFocus margin="dense" id="name" label="Item Name" type="text" fullWidth />
+            <TextField margin="dense" id="price" label="Price" type="number" fullWidth />
+            <TextField margin="dense" id="name" label="Email Address" type="email" fullWidth />
+            <TextField margin="dense" id="name" label="Email Address" type="email" fullWidth />
+
+            <FormControl fullWidth>
+              <InputLabel id="demo-simple-select-label">Age</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={itemMeasureUnit}
+                onChange={handleMeasureUnitChange}
+              >
+                <MenuItem value={10}>Ten</MenuItem>
+                <MenuItem value={20}>Twenty</MenuItem>
+                <MenuItem value={30}>Thirty</MenuItem>
+              </Select>
+            </FormControl>
+
+            <MultiImageInput
+              images={itemImages}
+              setImages={setItemImages}
+              cropConfig={{
+                crop: {
+                  unit: "%",
+                  aspect: 1 / 1,
+                  width: "100",
+                },
+                ruleOfThirds: true,
+              }}
+            />
+
+            <Paper className="p-2">
+              <Editor
+                placeholder="Item description..."
+                editorState={itemDescription}
+                onEditorStateChange={setItemDescription}
+              />
+            </Paper>
+          </div>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleAddItemClose} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleCreateItem} color="primary">
+            Save Item
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 };
