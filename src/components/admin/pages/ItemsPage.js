@@ -3,6 +3,9 @@ import { MDBDataTable, MDBRow, MDBCol } from "mdbreact";
 import { Editor } from "react-draft-wysiwyg";
 import { convertToRaw, convertFromRaw, EditorState } from "draft-js";
 
+//get firebase
+import firebase from "../../../utils/firebase/index";
+
 //react ui select
 import Select from "@material-ui/core/Select";
 import FormControl from "@material-ui/core/FormControl";
@@ -18,9 +21,12 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
+import MuiAlert from "@material-ui/lab/Alert";
+import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import MatButton from "@material-ui/core/Button";
 import AddIcon from "@material-ui/icons/AddCircle";
+import Snackbar from "@material-ui/core/Snackbar";
 
 //css files
 import "@fortawesome/fontawesome-free/css/all.min.css";
@@ -28,14 +34,73 @@ import "bootstrap-css-only/css/bootstrap.min.css";
 import "mdbreact/dist/css/mdb.css";
 import "../../../assets/styles/Admin.scss";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
+
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    width: "100%",
+    "& > * + *": {
+      marginTop: theme.spacing(2),
+    },
+  },
+}));
+
 const ItemsPage = () => {
+  const classes = useStyles();
+  const items = [];
+
   const [addItemModalOpen, setAddItemModalOpen] = useState(false);
+  const [tableData, setTableData] = useState([]);
 
   const [itemImages, setItemImages] = useState({});
   const [itemDescription, setItemDescription] = useState(EditorState.createEmpty());
-  const [itemMeasureUnit, setItemMeasureUnit] = useState();
+  const [itemMeasureUnit, setItemMeasureUnit] = useState("");
+  const [itemName, setItemName] = useState("");
+  const [itemPrice, setItemPrice] = useState(0);
+
+  //Snackbar states
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [alertType, setAlertType] = useState("error");
+  const [alertMessage, setAlertMessage] = useState("");
+
+  //loadData from firebase
+  const loadData = () => {
+    firebase
+      .firestore()
+      .collection("items")
+      .get()
+      .then((docs) => {
+        docs.forEach((doc) => {
+          let d = doc.data();
+          items.push(d);
+          data.rows.push({
+            name: d.name,
+            price: d.price,
+            unit: d.unit,
+            id: d.id,
+          });
+        });
+
+        setTableData(data);
+      })
+      .catch((err) => {
+        handleResponseAlert("load data failed, reload page", "error");
+      });
+  };
+
+  useEffect(() => {
+    loadData();
+  }, []);
 
   const handleAddItemClose = () => {
+    setItemImages({});
+    setItemDescription(EditorState.createEmpty());
+    setItemMeasureUnit("");
+    setItemName("");
+    setItemPrice(0);
     setAddItemModalOpen(false);
   };
 
@@ -43,13 +108,71 @@ const ItemsPage = () => {
     setAddItemModalOpen(true);
   };
 
-  const handleCreateItem = () => {
-    console.log(convertToRaw(itemDescription.getCurrentContent()));
-    console.log(itemImages);
-  };
-
   const handleMeasureUnitChange = (e) => {
     setItemMeasureUnit(e.target.value);
+  };
+
+  const handleItemNameChange = (e) => {
+    setItemName(e.target.value);
+  };
+
+  const handleItemPriceChange = (e) => {
+    setItemPrice(e.target.value);
+  };
+
+  const handleResponseAlert = (msg, type) => {
+    setAlertMessage(msg);
+    setAlertType(type);
+    setAlertOpen(true);
+  };
+
+  const handleAlertClose = () => {
+    setAlertOpen(false);
+  };
+
+  const handleCreateItem = () => {
+    let description = JSON.stringify(convertToRaw(itemDescription.getCurrentContent()));
+    let name = itemName;
+    let price = itemPrice;
+    let image = itemImages[0];
+    let unit = itemMeasureUnit;
+    let imageName = generateImageName();
+
+    firebase
+      .storage()
+      .ref()
+      .child(`/items/${imageName}.png`)
+      .putString(image, "data_url")
+      .then((res) => {
+        if (res.state == "success") {
+          firebase
+            .firestore()
+            .collection("items")
+            .add({
+              name,
+              price,
+              imageName,
+              unit,
+              description,
+            })
+            .then((res) => {
+              handleResponseAlert("item created successfully!", "success");
+              handleAddItemClose();
+            })
+            .catch((err) => {
+              handleResponseAlert("item creation failed !", "error");
+              handleAddItemClose();
+            });
+        }
+      })
+      .catch((err) => {
+        handleResponseAlert("item creation failed !", "error");
+        handleAddItemClose();
+      });
+  };
+
+  const generateImageName = () => {
+    return Date.now() + "ouj";
   };
 
   const data = {
@@ -61,207 +184,25 @@ const ItemsPage = () => {
         width: 150,
       },
       {
-        label: "Position",
-        field: "position",
+        label: "Price",
+        field: "price",
         sort: "asc",
         width: 270,
       },
       {
-        label: "Office",
-        field: "office",
-        sort: "asc",
-        width: 200,
-      },
-      {
-        label: "Age",
-        field: "age",
-        sort: "asc",
-        width: 100,
-      },
-      {
-        label: "Start date",
-        field: "date",
+        label: "Unit",
+        field: "unit",
         sort: "asc",
         width: 150,
       },
       {
-        label: "Salary",
-        field: "salary",
+        label: "Actions",
+        field: "actions",
         sort: "asc",
         width: 100,
       },
     ],
-    rows: [
-      {
-        name: "Airi Satou",
-        position: "Accountant",
-        office: "Tokyo",
-        age: "33",
-        date: "2008/11/28",
-        salary: "$162",
-      },
-      {
-        name: "Brielle Williamson",
-        position: "Integration Specialist",
-        office: "New York",
-        age: "61",
-        date: "2012/12/02",
-        salary: "$372",
-      },
-      {
-        name: "Herrod Chandler",
-        position: "Sales Assistant",
-        office: "San Francisco",
-        age: "59",
-        date: "2012/08/06",
-        salary: "$137",
-      },
-      {
-        name: "Rhona Davidson",
-        position: "Integration Specialist",
-        office: "Tokyo",
-        age: "55",
-        date: "2010/10/14",
-        salary: "$327",
-      },
-      {
-        name: "Colleen Hurst",
-        position: "Javascript Developer",
-        office: "San Francisco",
-        age: "39",
-        date: "2009/09/15",
-        salary: "$205",
-      },
-      {
-        name: "Sonya Frost",
-        position: "Software Engineer",
-        office: "Edinburgh",
-        age: "23",
-        date: "2008/12/13",
-        salary: "$103",
-      },
-      {
-        name: "Jena Gaines",
-        position: "Office Manager",
-        office: "London",
-        age: "30",
-        date: "2008/12/19",
-        salary: "$90",
-      },
-      {
-        name: "Quinn Flynn",
-        position: "Support Lead",
-        office: "Edinburgh",
-        age: "22",
-        date: "2013/03/03",
-        salary: "$342",
-      },
-      {
-        name: "Charde Marshall",
-        position: "Regional Director",
-        office: "San Francisco",
-        age: "36",
-        date: "2008/10/16",
-        salary: "$470",
-      },
-      {
-        name: "Haley Kennedy",
-        position: "Senior Marketing Designer",
-        office: "London",
-        age: "43",
-        date: "2012/12/18",
-        salary: "$313",
-      },
-      {
-        name: "Tatyana Fitzpatrick",
-        position: "Regional Director",
-        office: "London",
-        age: "19",
-        date: "2010/03/17",
-        salary: "$385",
-      },
-      {
-        name: "Michael Silva",
-        position: "Marketing Designer",
-        office: "London",
-        age: "66",
-        date: "2012/11/27",
-        salary: "$198",
-      },
-      {
-        name: "Paul Byrd",
-        position: "Chief Financial Officer (CFO)",
-        office: "New York",
-        age: "64",
-        date: "2010/06/09",
-        salary: "$725",
-      },
-
-      {
-        name: "Jennifer Acosta",
-        position: "Junior Javascript Developer",
-        office: "Edinburgh",
-        age: "43",
-        date: "2013/02/01",
-        salary: "$75",
-      },
-      {
-        name: "Cara Stevens",
-        position: "Sales Assistant",
-        office: "New York",
-        age: "46",
-        date: "2011/12/06",
-        salary: "$145",
-      },
-      {
-        name: "Hermione Butler",
-        position: "Regional Director",
-        office: "London",
-        age: "47",
-        date: "2011/03/21",
-        salary: "$356",
-      },
-      {
-        name: "Lael Greer",
-        position: "Systems Administrator",
-        office: "London",
-        age: "21",
-        date: "2009/02/27",
-        salary: "$103",
-      },
-      {
-        name: "Jonas Alexander",
-        position: "Developer",
-        office: "San Francisco",
-        age: "30",
-        date: "2010/07/14",
-        salary: "$86",
-      },
-      {
-        name: "Shad Decker",
-        position: "Regional Director",
-        office: "Edinburgh",
-        age: "51",
-        date: "2008/11/13",
-        salary: "$183",
-      },
-      {
-        name: "Michael Bruce",
-        position: "Javascript Developer",
-        office: "Singapore",
-        age: "29",
-        date: "2011/06/27",
-        salary: "$183",
-      },
-      {
-        name: "Donna Snider",
-        position: "Customer Support",
-        office: "New York",
-        age: "27",
-        date: "2011/01/25",
-        salary: "$112",
-      },
-    ],
+    rows: [],
   };
 
   return (
@@ -277,7 +218,7 @@ const ItemsPage = () => {
       <MDBRow center={true} className="">
         <MDBCol size="10">
           <Paper className="p-3">
-            <MDBDataTable striped bordered small data={data} />
+            <MDBDataTable striped bordered small data={tableData} />
           </Paper>
         </MDBCol>
       </MDBRow>
@@ -286,22 +227,35 @@ const ItemsPage = () => {
         <DialogTitle id="form-dialog-title">Add Item</DialogTitle>
         <DialogContent>
           <div className="horizontal-form">
-            <TextField autoFocus margin="dense" id="name" label="Item Name" type="text" fullWidth />
-            <TextField margin="dense" id="price" label="Price" type="number" fullWidth />
-            <TextField margin="dense" id="name" label="Email Address" type="email" fullWidth />
-            <TextField margin="dense" id="name" label="Email Address" type="email" fullWidth />
-
+            <TextField
+              value={itemName}
+              onChange={handleItemNameChange}
+              autoFocus
+              margin="dense"
+              id="name"
+              label="Item Name"
+              type="text"
+              fullWidth
+            />
+            <TextField
+              value={itemPrice}
+              onChange={handleItemPriceChange}
+              margin="dense"
+              id="price"
+              label="Price"
+              type="number"
+              fullWidth
+            />
             <FormControl fullWidth>
-              <InputLabel id="demo-simple-select-label">Age</InputLabel>
+              <InputLabel id="demo-simple-select-label">Unit</InputLabel>
               <Select
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
                 value={itemMeasureUnit}
                 onChange={handleMeasureUnitChange}
               >
-                <MenuItem value={10}>Ten</MenuItem>
-                <MenuItem value={20}>Twenty</MenuItem>
-                <MenuItem value={30}>Thirty</MenuItem>
+                <MenuItem value={"Kg"}>Kg</MenuItem>
+                <MenuItem value={"Pcs"}>Pcs</MenuItem>
               </Select>
             </FormControl>
 
@@ -316,6 +270,7 @@ const ItemsPage = () => {
                 },
                 ruleOfThirds: true,
               }}
+              max={1}
             />
 
             <Paper className="p-2">
@@ -336,6 +291,12 @@ const ItemsPage = () => {
           </Button>
         </DialogActions>
       </Dialog>
+
+      <Snackbar open={alertOpen} autoHideDuration={4000} onClose={handleAlertClose}>
+        <Alert onClose={handleAlertClose} severity={alertType}>
+          {alertMessage}
+        </Alert>
+      </Snackbar>
     </>
   );
 };
