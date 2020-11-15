@@ -103,7 +103,7 @@ const ItemsPage = () => {
                 <Button variant="contained" color="primary" onClick={() => handleEditItemOpen(doc.id)}>
                   Edit
                 </Button>
-                <Button variant="contained" color="secondary">
+                <Button variant="contained" color="secondary" onClick={() => handleDeleteItemOpen(doc.id)}>
                   Delete
                 </Button>
               </>
@@ -203,11 +203,6 @@ const ItemsPage = () => {
       });
   };
 
-  //delete item event handlers
-  const handleDeleteItem = () => {
-
-  }
-
   const handleEditItemClose = () => {
     setEditItemImage({});
     setEditItemDescription(EditorState.createEmpty());
@@ -215,6 +210,32 @@ const ItemsPage = () => {
     setEditItemName("");
     setEditItemPrice(0);
     setEditItemModalOpen(false);
+  };
+
+  //delete item event handlers
+  const handleDeleteItemOpen = (id) => {
+    setSelectedItemId(id);
+    setDeleteItemModalOpen(true);
+  };
+
+  const handleDeleteItemConfirm = () => {
+    fb.collection("items")
+      .doc(selectedItemId)
+      .delete()
+      .then((res) => {
+        loadData();
+        handleDeleteItemClose();
+        handleResponseAlert("Item Deleted successfully!", "success");
+      })
+      .catch((err) => {
+        handleDeleteItemClose();
+        handleResponseAlert("Item Delete failed!", "error");
+      });
+  };
+
+  const handleDeleteItemClose = () => {
+    setSelectedItemId("");
+    setDeleteItemModalOpen(false);
   };
 
   useEffect(() => {
@@ -480,6 +501,19 @@ const ItemsPage = () => {
           </Button>
           <Button onClick={handleUpdateItem} color="primary">
             Save Item
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog open={deleteItemModalOpen} onClose={handleDeleteItemClose} aria-labelledby="form-dialog-title">
+        <DialogTitle id="form-dialog-title">Update Item</DialogTitle>
+        <DialogContent>Are you sure you want to delete this item?</DialogContent>
+        <DialogActions>
+          <Button onClick={handleDeleteItemClose} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleDeleteItemConfirm} color="warning">
+            Confirm
           </Button>
         </DialogActions>
       </Dialog>
