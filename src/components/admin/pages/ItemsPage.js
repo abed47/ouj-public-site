@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { MDBDataTable, MDBRow, MDBCol } from "mdbreact";
 import { Editor } from "react-draft-wysiwyg";
 import { convertToRaw, convertFromRaw, EditorState } from "draft-js";
+import axios from "axios";
 
 //get firebase
 import firebase from "../../../utils/firebase/index";
@@ -11,6 +12,7 @@ import Select from "@material-ui/core/Select";
 import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 import MultiImageInput from "react-multiple-image-input";
 import AddItemModalContent from "./../components/AddItemModal";
@@ -50,16 +52,33 @@ const useStyles = makeStyles((theme) => ({
 
 const ItemsPage = () => {
   const classes = useStyles();
+  const fb = firebase.firestore();
+  const fs = firebase.storage();
   const items = [];
 
   const [addItemModalOpen, setAddItemModalOpen] = useState(false);
+  const [editItemModalOpen, setEditItemModalOpen] = useState(false);
+  const [deleteItemModalOpen, setDeleteItemModalOpen] = useState(false);
+  const [loadingModalOpen, setLoadingModalOpen] = useState(false);
+
+  //hold item id for edit and data grab
+  const [selectedItemId, setSelectedItemId] = useState("");
+
   const [tableData, setTableData] = useState([]);
 
+  //add item constants
   const [itemImages, setItemImages] = useState({});
   const [itemDescription, setItemDescription] = useState(EditorState.createEmpty());
   const [itemMeasureUnit, setItemMeasureUnit] = useState("");
   const [itemName, setItemName] = useState("");
   const [itemPrice, setItemPrice] = useState(0);
+
+  //edit item constants
+  const [editItemImage, setEditItemImage] = useState({});
+  const [editItemDescription, setEditItemDescription] = useState(EditorState.createEmpty());
+  const [editItemMeasureUnit, setEditItemMeasureUnit] = useState("");
+  const [editItemName, setEditItemName] = useState("");
+  const [editItemPrice, setEditItemPrice] = useState("");
 
   //Snackbar states
   const [alertOpen, setAlertOpen] = useState(false);
@@ -68,19 +87,27 @@ const ItemsPage = () => {
 
   //loadData from firebase
   const loadData = () => {
-    firebase
-      .firestore()
-      .collection("items")
+    fb.collection("items")
       .get()
       .then((docs) => {
         docs.forEach((doc) => {
           let d = doc.data();
+          d.id = doc.id;
           items.push(d);
           data.rows.push({
             name: d.name,
             price: d.price,
             unit: d.unit,
-            id: d.id,
+            actions: (
+              <>
+                <Button variant="contained" color="primary" onClick={() => handleEditItemOpen(doc.id)}>
+                  Edit
+                </Button>
+                <Button variant="contained" color="secondary">
+                  Delete
+                </Button>
+              </>
+            ),
           });
         });
 
@@ -89,6 +116,105 @@ const ItemsPage = () => {
       .catch((err) => {
         handleResponseAlert("load data failed, reload page", "error");
       });
+  };
+
+  //edit item event handlers
+  const handleEditItemOpen = async (id) => {
+    setLoadingModalOpen(true);
+    setSelectedItemId(id);
+    let editItem = items.filter((el) => el.id == id)[0];
+    if (editItem) {
+      console.log(editItem);
+
+      let url = await fs
+        .ref()
+        .child("/items/" + editItem.imageName + ".png")
+        .getDownloadURL();
+
+      axios
+        .get(url, { responseType: "arraybuffer" })
+        .then((res) => {
+          setLoadingModalOpen(false);
+          let imageBuffer = Buffer.from(res.data, "binary").toString("base64");
+          setEditItemImage({ 0: "data:image/png;base64," + imageBuffer });
+          setEditItemDescription(
+            EditorState.createWithContent(convertFromRaw(JSON.parse(editItem.description)))
+          );
+          setEditItemName(editItem.name);
+          setEditItemPrice(editItem.price);
+          setEditItemMeasureUnit(editItem.unit);
+          setEditItemModalOpen(true);
+        })
+        .catch((err) => {
+          setLoadingModalOpen(false);
+          handleResponseAlert("error happened", "error");
+        });
+    }
+  };
+
+  const handleEditNameChange = (e) => {
+    setEditItemName(e.target.value);
+  };
+
+  const handleEditPriceChange = (e) => {
+    setEditItemPrice(e.target.value);
+  };
+
+  const handleEditUnitChange = (e) => {
+    setEditItemMeasureUnit(e.target.value);
+  };
+
+  const handleUpdateItem = () => {
+    let description = JSON.stringify(convertToRaw(editItemDescription.getCurrentContent()));
+    let name = editItemName;
+    let price = editItemPrice;
+    let image = editItemImage[0];
+    let unit = editItemMeasureUnit;
+    let imageName = generateImageName();
+
+    fs.ref()
+      .child(`/items/${imageName}.png`)
+      .putString(image, "data_url")
+      .then((res) => {
+        if (res.state == "success") {
+          fb.collection("items")
+            .doc(selectedItemId)
+            .update({
+              name,
+              price,
+              imageName,
+              unit,
+              description,
+            })
+            .then((res) => {
+              handleResponseAlert("item updated successfully !", "success");
+              setEditItemModalOpen(false);
+              loadData();
+            })
+            .catch((err) => {
+              handleResponseAlert("item update failed !", "error");
+              setEditItemModalOpen(false);
+            });
+        }
+      })
+      .catch((err) => {
+        handleResponseAlert("item update failed !", "error");
+        setEditItemModalOpen(false);
+      });
+  };
+
+  //delete item event handlers
+  const handleDeleteItem = () => {
+
+  }
+
+  const handleEditItemClose = () => {
+    setEditItemImage({});
+    setEditItemDescription(EditorState.createEmpty());
+    setEditItemMeasureUnit("");
+    setEditItemName("");
+    setEditItemPrice(0);
+    setEditItemModalOpen(false);
   };
 
   useEffect(() => {
@@ -138,16 +264,12 @@ const ItemsPage = () => {
     let unit = itemMeasureUnit;
     let imageName = generateImageName();
 
-    firebase
-      .storage()
-      .ref()
+    fs.ref()
       .child(`/items/${imageName}.png`)
       .putString(image, "data_url")
       .then((res) => {
         if (res.state == "success") {
-          firebase
-            .firestore()
-            .collection("items")
+          fb.collection("items")
             .add({
               name,
               price,
@@ -158,6 +280,7 @@ const ItemsPage = () => {
             .then((res) => {
               handleResponseAlert("item created successfully!", "success");
               handleAddItemClose();
+              loadData();
             })
             .catch((err) => {
               handleResponseAlert("item creation failed !", "error");
@@ -292,6 +415,80 @@ const ItemsPage = () => {
         </DialogActions>
       </Dialog>
 
+      <Dialog open={editItemModalOpen} onClose={handleEditItemClose} aria-labelledby="form-dialog-title">
+        <DialogTitle id="form-dialog-title">Update Item</DialogTitle>
+        <DialogContent>
+          <div className="horizontal-form">
+            <TextField
+              value={editItemName}
+              onChange={handleEditNameChange}
+              autoFocus
+              margin="dense"
+              id="name"
+              label="Item Name"
+              type="text"
+              fullWidth
+            />
+            <TextField
+              value={editItemPrice}
+              onChange={handleEditPriceChange}
+              margin="dense"
+              id="price"
+              label="Price"
+              type="number"
+              fullWidth
+            />
+            <FormControl fullWidth>
+              <InputLabel id="demo-simple-select-label">Unit</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={editItemMeasureUnit}
+                onChange={handleEditUnitChange}
+              >
+                <MenuItem value={"Kg"}>Kg</MenuItem>
+                <MenuItem value={"Pcs"}>Pcs</MenuItem>
+              </Select>
+            </FormControl>
+
+            <MultiImageInput
+              images={editItemImage}
+              setImages={setEditItemImage}
+              cropConfig={{
+                crop: {
+                  unit: "%",
+                  aspect: 1 / 1,
+                  width: "100",
+                },
+                ruleOfThirds: true,
+              }}
+              max={1}
+            />
+
+            <Paper className="p-2">
+              <Editor
+                placeholder="Item description..."
+                editorState={editItemDescription}
+                onEditorStateChange={setEditItemDescription}
+              />
+            </Paper>
+          </div>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleEditItemClose} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleUpdateItem} color="primary">
+            Save Item
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog open={loadingModalOpen} onClose={() => setLoadingModalOpen(false)} className="bg-none">
+        <div className="p-5 bg-none">
+          <CircularProgress />
+        </div>
+      </Dialog>
       <Snackbar open={alertOpen} autoHideDuration={4000} onClose={handleAlertClose}>
         <Alert onClose={handleAlertClose} severity={alertType}>
           {alertMessage}
