@@ -14,6 +14,8 @@ import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import List from "@material-ui/core/List";
 
+import Storage from "../../utils/storage";
+
 import { MDBContainer, MDBRow, MDBCol } from "mdbreact";
 
 import icons from "../UI/Icons";
@@ -25,7 +27,7 @@ import { useAuth } from "../context/AuthContext";
 import { useHistory } from "react-router-dom";
 import { Router, Switch, Route, Link } from "react-router-dom";
 
-const { MailIcon, InboxIcon, LogOutIcon, AddBox, InfoIcon } = icons();
+const { MailIcon, DiscountIcon, LogOutIcon, AddBox, InfoIcon } = icons();
 
 const drawerWidth = 240;
 
@@ -55,7 +57,7 @@ const useStyles = makeStyles((theme) => ({
 const Admin = (props) => {
   const classes = useStyles();
   const [loading, setLoading] = useState(true);
-  const { currentUser } = useAuth();
+  const { currentUser, setCurrentUser } = useAuth();
   const history = useHistory();
 
   useEffect(() => {
@@ -65,8 +67,11 @@ const Admin = (props) => {
       history.push("/admin-login");
     }
   }, []);
-
-  const handleLogout = () => {};
+  const handleLogout = () => {
+    Storage.flush();
+    setCurrentUser({});
+    history.push("/admin-login");
+  };
 
   return (
     <div className={classes.root}>
@@ -100,7 +105,7 @@ const Admin = (props) => {
             <Link to="/admin/offers">
               <ListItem button>
                 <ListItemIcon>
-                  <InfoIcon />
+                  <DiscountIcon />
                 </ListItemIcon>
                 <ListItemText primary="Offers" />
               </ListItem>
@@ -115,7 +120,7 @@ const Admin = (props) => {
               </ListItem>
             </Link>
 
-            <ListItem button>
+            <ListItem button onClick={handleLogout}>
               <ListItemIcon>
                 <LogOutIcon />
               </ListItemIcon>
