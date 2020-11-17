@@ -2,6 +2,7 @@ import React from "react";
 import { useState, useEffect } from "react";
 import InfoPage from "./pages/InformationPage";
 import ItemsPage from "./pages/ItemsPage";
+import OffersPage from "./pages/OffersPage";
 import Drawer from "@material-ui/core/Drawer";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -96,6 +97,15 @@ const Admin = (props) => {
               </ListItem>
             </Link>
 
+            <Link to="/admin/offers">
+              <ListItem button>
+                <ListItemIcon>
+                  <InfoIcon />
+                </ListItemIcon>
+                <ListItemText primary="Offers" />
+              </ListItem>
+            </Link>
+
             <Link to="/admin/info">
               <ListItem button>
                 <ListItemIcon>
@@ -104,6 +114,7 @@ const Admin = (props) => {
                 <ListItemText primary="Site information" />
               </ListItem>
             </Link>
+
             <ListItem button>
               <ListItemIcon>
                 <LogOutIcon />
@@ -126,6 +137,7 @@ const Admin = (props) => {
             }}
           />
           <Route exact={true} path="/admin/items" component={ItemsPage} />
+          <Route exact={true} path="/admin/offers" component={OffersPage} />
           <Route exact={true} path="/admin/info" component={InfoPage} />
         </Switch>
       </main>
