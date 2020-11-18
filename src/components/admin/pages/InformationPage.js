@@ -3,6 +3,7 @@ import { Editor } from "react-draft-wysiwyg";
 import { convertToRaw, convertFromRaw, EditorState } from "draft-js";
 import firebase from "../../../utils/firebase/index";
 import MultiImageInput from "react-multiple-image-input";
+import axios from "axios";
 
 import Button from "@material-ui/core/Button";
 import MuiAlert from "@material-ui/lab/Alert";
@@ -70,7 +71,11 @@ const InfoPage = (props) => {
 
     data.forEach((el) => {
       if (el.id == "banner") {
-        let d = el.data;
+        let count = el.data.count;
+        if (count) {
+          console.log(count);
+          loadBannerImages(count);
+        }
       }
 
       if (el.id == "contact") {
@@ -107,10 +112,74 @@ const InfoPage = (props) => {
       })
       .then((res) => {
         createAlert("success", "data updated successfully");
+        updateBanner();
       })
       .catch((err) => {
         createAlert("error", "update failed please try again later!");
       });
+  };
+
+  const updateBanner = () => {
+    let imageList = [];
+    for (let item in bannerImages) {
+      imageList.push("banner" + item + ".png");
+      fs.ref()
+        .child(`/banners/banner${item}.png`)
+        .putString(bannerImages[item], "data_url")
+        .then((res) => {
+          console.log(res);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+
+    fb.collection("info")
+      .doc("banner")
+      .update({
+        count: imageList.length,
+      })
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const loadBannerImages = async (count) => {
+    let imageUrls = [];
+    let imageDateUrls = {};
+    for (let i = 0; i < count; i++) {
+      await fs
+        .ref()
+        .child(`/banners/banner${i}.png`)
+        .getDownloadURL()
+        .then((res) => {
+          imageUrls.push(res);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+
+    imageUrls.forEach((el, index) => {
+      console.log("hell");
+      console.log(el);
+      axios
+        .get(el, { responseType: "arraybuffer" })
+        .then((res) => {
+          let obj = bannerImages;
+          let buff = Buffer.from(res.data, "binary").toString("base64");
+          obj[index] = "data:image/png;base64," + buff;
+
+          console.log(res.data);
+          setBannerImages({ ...obj });
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    });
   };
 
   const createAlert = (type, msg) => {
@@ -122,6 +191,7 @@ const InfoPage = (props) => {
   const handleAlertClose = () => {
     setAlertOpen(false);
   };
+
   const saveChanges = () => {};
   return (
     <>
@@ -141,7 +211,7 @@ const InfoPage = (props) => {
               },
               ruleOfThirds: true,
             }}
-            max={1}
+            max={5}
           />
         </MDBCol>
       </MDBRow>
