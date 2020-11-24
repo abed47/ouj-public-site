@@ -3,6 +3,10 @@ import oujLogo from "../assets/images/ouj.png";
 import heroTop from "../assets/images/hero-top.png";
 import heroBottom from "../assets/images/hero-bottom.png";
 import heroBg from "../assets/images/herobg.png";
+import whatsAppIcon from "../assets/images/whatsapp-icon.png";
+import instagramIcon from "../assets/images/instagram-icon.png";
+import facebookIcon from "../assets/images/fb-icon.png";
+import twitterIcon from "../assets/images/twitter-icon.png";
 import {
   MDBNavbar,
   MDBNavbarBrand,
@@ -39,27 +43,14 @@ const Home = (props) => {
         <MDBNavbarToggler onClick={toggleCollapse} />
         <MDBCollapse id="navbarCollapse3" isOpen={isOpen} navbar>
           <MDBNavbarNav right>
-            <MDBNavItem active>
-              <MDBNavLink to="#!">Home</MDBNavLink>
+            <MDBNavItem className="mx-2">
+              <MDBNavLink to="/">Home</MDBNavLink>
             </MDBNavItem>
-            <MDBNavItem>
-              <MDBNavLink to="#!">Features</MDBNavLink>
+            <MDBNavItem className="mx-2">
+              <MDBNavLink to="/products">Products</MDBNavLink>
             </MDBNavItem>
-            <MDBNavItem>
-              <MDBNavLink to="#!">Pricing</MDBNavLink>
-            </MDBNavItem>
-            <MDBNavItem>
-              <MDBDropdown>
-                <MDBDropdownToggle nav caret>
-                  <div className="d-none d-md-inline">Dropdown</div>
-                </MDBDropdownToggle>
-                <MDBDropdownMenu className="dropdown-default">
-                  <MDBDropdownItem href="#!">Action</MDBDropdownItem>
-                  <MDBDropdownItem href="#!">Another Action</MDBDropdownItem>
-                  <MDBDropdownItem href="#!">Something else here</MDBDropdownItem>
-                  <MDBDropdownItem href="#!">Something else here</MDBDropdownItem>
-                </MDBDropdownMenu>
-              </MDBDropdown>
+            <MDBNavItem className="mx-2">
+              <MDBNavLink to="/contact-us">Contact Us</MDBNavLink>
             </MDBNavItem>
           </MDBNavbarNav>
         </MDBCollapse>
@@ -73,6 +64,7 @@ const Home = (props) => {
         <MDBCol size="12" className="text-center">
           <div className="section-title">
             <h1 className="section-title-text">OUJ PETROLEUM</h1>
+            <h4 className="section-title-subheader title m-5">Saida - lebanon</h4>
           </div>
         </MDBCol>
 
@@ -125,13 +117,28 @@ const Home = (props) => {
           direction="right"
         />
       </MDBRow>
-      <MDBRow className="m-0 footer" className="footer m-0">
+      <MDBRow className="footer m-0">
+        <img src={heroTop} alt="" className="footer-top-img" />
         <MDBCol sm="5" md="5" className="footer-col">
           <h1 className="footer-title">Footer Title</h1>
           <p className="footer-description">
             Lorem ipsum, dolor sit amet consectetur adipisicing elit. Unde ipsum, amet cumque nulla enim
             repudiandae quasi eligendi exercitationem dolore quos, nemo illo veritatis laborum architecto sit
             rerum beatae culpa voluptatem.
+          </p>
+          <p className="footer-icon-container">
+            <Link className="footer-icon p-0 mr-2">
+              <img src={instagramIcon} alt="" />
+            </Link>
+            <Link className="footer-icon p-0 mx-2">
+              <img src={facebookIcon} alt="" />
+            </Link>
+            <Link className="footer-icon p-0 mx-2">
+              <img src={twitterIcon} alt="" />
+            </Link>
+            <Link className="footer-icon p-0 mx-2">
+              <img src={whatsAppIcon} alt="" />
+            </Link>
           </p>
         </MDBCol>
         <MDBCol sm="5" md="2" className="footer-col">

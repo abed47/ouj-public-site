@@ -164,8 +164,18 @@
   color: white;
   box-sizing: border-box;
   padding: 50px 0;
+  padding-top: 70px;
+  position: relative;
+  overflow: hidden;
 
-  &-col {
+  &-top-img {
+    position: absolute;
+    width: 100%;
+    top: -5em;
+    background-color: #33348e;
+  }
+
+  & &-col {
     display: flex;
     flex-direction: column;
     margin: 30px 0;
@@ -189,6 +199,21 @@
     box-sizing: border-box;
     padding: 0 50px;
     font-size: 1.1rem;
+  }
+
+  &-icon-container {
+    padding: 10px 50px;
+  }
+
+  &-icon {
+    padding: 0;
+    a {
+      padding: 0;
+    }
+    img {
+      padding: 0;
+      width: 2.6rem;
+    }
   }
 }
 
