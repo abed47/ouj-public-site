@@ -7,7 +7,7 @@ import ProtectedAdminRoute from "./AdminProtectedRoute";
 function Routes() {
   return (
     <Router>
-      <Route path="/home" component={Home} />
+      <Route path="/" component={Home} />
       <ProtectedAdminRoute path="/admin" component={AdminHome} />
       <Route path="/admin-login" component={AdminLogin} />
     </Router>
