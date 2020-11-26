@@ -8,15 +8,3 @@ import DiscountIcon from "@material-ui/icons/LocalOffer";
 import PhoneIcon from "@material-ui/icons/Phone";
 
 export { InboxIcon, MailIcon, LogOutIcon, AddBox, InfoIcon, DiscountIcon, PhoneIcon };
-const Icons = () => {
-  return {
-    InboxIcon,
-    MailIcon,
-    LogOutIcon,
-    AddBox,
-    InfoIcon,
-    DiscountIcon,
-    PhoneIcon,
-  };
-};
-export default Icons;

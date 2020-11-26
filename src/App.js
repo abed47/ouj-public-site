@@ -1,3 +1,5 @@
+import React from "react";
+import ReactDOM from "react-dom";
 import "./assets/styles/App.scss";
 import Routes from "./router/index.js";
 import { AuthProvider } from "./components/context/AuthContext";

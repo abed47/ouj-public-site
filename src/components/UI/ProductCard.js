@@ -6,7 +6,7 @@ const ProductCard = (props) => {
     <MDBCol md={props.md} lg={props.lg} sm={props.sm} className="my-3">
       <Link to="/home">
         <MDBCard>
-          <MDBCardImage className="img-fluid" src={props.imgUrl} waves />
+          <MDBCardImage className="img-fluid w-100" src={props.imgUrl} waves />
           <MDBCardBody>
             <MDBCardTitle>{props.itemTitle}</MDBCardTitle>
             <MDBCardText>{props.itemBody}</MDBCardText>
