@@ -198,6 +198,7 @@ body {
   &-top-img {
     position: absolute;
     width: 100%;
+    min-width: 900px;
     top: -5em;
     background-color: #33348e;
   }
@@ -343,6 +344,30 @@ body {
         font-weight: 600;
         font-size: 1.3rem;
       }
+    }
+  }
+}
+
+@media only screen and (min-width: 1200px) {
+  .footer {
+    &-top-img {
+      position: absolute;
+      width: 100%;
+      min-width: 900px;
+      top: -35%;
+      background-color: #33348e;
+    }
+  }
+}
+
+@media only screen and (min-width: 1400px) {
+  .footer {
+    &-top-img {
+      position: absolute;
+      width: 100%;
+      min-width: 900px;
+      top: -50%;
+      background-color: #33348e;
     }
   }
 }

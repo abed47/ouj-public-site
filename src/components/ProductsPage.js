@@ -23,13 +23,11 @@ const ProductsPage = (props) => {
         for (let i = 0; i < docs.length; i++) {
           let obj = docs[i].data();
           await obj;
-          console.log(obj);
           obj.image = await getImageUrl(obj.imageName);
           itemsHolder.push(obj);
         }
 
         setItems(itemsHolder);
-        console.log(itemsHolder);
         setLoading(false);
       })
       .catch((err) => {

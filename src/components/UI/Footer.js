@@ -14,41 +14,36 @@ const Footer = (props) => {
     <MDBRow className="footer m-0">
       <img src={heroTop} alt="" className="footer-top-img" />
       <MDBCol sm="5" md="5" className="footer-col">
-        <h1 className="footer-title">Footer Title</h1>
-        <p className="footer-description">
-          Lorem ipsum, dolor sit amet consectetur adipisicing elit. Unde ipsum, amet cumque nulla enim
-          repudiandae quasi eligendi exercitationem dolore quos, nemo illo veritatis laborum architecto sit
-          rerum beatae culpa voluptatem.
-        </p>
+        <h1 className="footer-title">{props.caption1}</h1>
+        <p className="footer-description">{props.caption2}</p>
         <p className="footer-icon-container">
-          <Link className="footer-icon p-0 mr-2">
+          <Link to={"/" + props.insta} className="footer-icon p-0 mr-2">
             <img src={instagramIcon} alt="" />
           </Link>
-          <Link className="footer-icon p-0 mx-2">
+          <Link to={"/" + props.fb} className="footer-icon p-0 mx-2">
             <img src={facebookIcon} alt="" />
           </Link>
-          <Link className="footer-icon p-0 mx-2">
+          <Link to={"/" + props.twitter} className="footer-icon p-0 mx-2">
             <img src={twitterIcon} alt="" />
           </Link>
-          <Link className="footer-icon p-0 mx-2">
+          <Link to={"/" + props.wa} className="footer-icon p-0 mx-2">
             <img src={whatsAppIcon} alt="" />
           </Link>
         </p>
       </MDBCol>
-      <MDBCol sm="5" md="2" className="footer-col">
-        <h1 className="footer-title">title 2</h1>
-        <Link to="#">link 1</Link>
-        <Link to="#">link 2</Link>
+      <MDBCol sm="5" md="3" lg="2" className="footer-col">
+        <h1 className="footer-title">About</h1>
+        <Link to="#">History</Link>
+        <Link to="#">Our Team</Link>
       </MDBCol>
-      <MDBCol sm="12" md="2" className="footer-col">
-        <h1 className="footer-title">title 3</h1>
-        <Link to="#">link 1</Link>
+      <MDBCol sm="12" md="3" lg="2" className="footer-col">
+        <h1 className="footer-title">Services</h1>
+        <Link to="/products">Our Products</Link>
       </MDBCol>
-      <MDBCol sm="12" md="2" className="footer-col">
-        <h1 className="footer-title">title 3</h1>
-        <Link to="#">link 1</Link>
-        <Link to="#">link 2</Link>
-        <Link to="#">link 2</Link>
+      <MDBCol sm="12" md="3" lg="2" className="footer-col">
+        <h1 className="footer-title">Other</h1>
+        <Link to="/contact-us">Contact Us</Link>
+        <Link to="#">Help</Link>
       </MDBCol>
     </MDBRow>
   );
