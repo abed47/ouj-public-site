@@ -1,22 +1,20 @@
 import React, { useState, useEffect, useContext } from "react";
 import ReactDom from "react-dom";
-import heroTop from "../assets/images/hero-top.png";
-import heroBottom from "../assets/images/hero-bottom.png";
 import heroBg from "../assets/images/herobg.png";
-import { MDBRow, MDBCol } from "mdbreact";
+import { MDBRow, MDBCol, MDBCarousel, MDBCarouselItem, MDBView, MDBCarouselInner } from "mdbreact";
 import { Link } from "react-router-dom";
 import ProductCard from "./UI/ProductCard";
 import PromoCard from "./UI/PromoElement";
 import NavBar from "./UI/NavBar";
 import Footer from "./UI/Footer";
 import { InformationContext } from "./context/InformationContext";
-import { convertToRaw } from "draft-js";
 import convertToHtml from "draftjs-to-html";
+
 const Home = (props) => {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);
   const [contact, setContact] = useState({});
-  const [banner, setBanner] = useState(heroBg);
+  const [banners, setBanners] = useState([]);
   const [info, setInfo] = useState({});
   const [offers, setOffers] = useState([]);
   const context = useContext(InformationContext);
@@ -39,7 +37,7 @@ const Home = (props) => {
       arr.push(itemsArr[i]);
     }
     setItems(itemsArr);
-    if (context.banner) setBanner(context.banner);
+    if (context.banners) setBanners(context.banners);
     if (context.offers) setOffers(context.offers);
   };
 
@@ -47,7 +45,6 @@ const Home = (props) => {
     let d = JSON.parse(data);
     // let raw = convertToRaw(d);
     let html = convertToHtml(d);
-    console.log(html);
     return html;
   };
 
@@ -58,8 +55,29 @@ const Home = (props) => {
   return (
     <>
       <NavBar />
-      <MDBRow className="hero2 m-0">
-        <img src={banner} alt="" className="hero-img" />
+      <MDBRow className="m-0 mb-5 p-0 ">
+        <MDBCol size="12" className="m-0 p-0 h-50 slider-container">
+          <MDBCarousel
+            activeItem={1}
+            length={3}
+            showControls={true}
+            showIndicators={false}
+            className="z-depth-1"
+            slide
+          >
+            <MDBCarouselInner>
+              {banners.map((banner, i) => {
+                return (
+                  <MDBCarouselItem key={i} itemId={i + 1}>
+                    <MDBView>
+                      <img className="d-block w-100" src={banner} />
+                    </MDBView>
+                  </MDBCarouselItem>
+                );
+              })}
+            </MDBCarouselInner>
+          </MDBCarousel>
+        </MDBCol>
       </MDBRow>
       <MDBRow center className="product-section m-0">
         <MDBCol size="12" className="text-center">

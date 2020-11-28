@@ -10,7 +10,7 @@ const InformationContextProvider = (props) => {
   const [offers, setOffers] = useState([]);
   const [contactInfo, setContactInfo] = useState({});
   const [generalInfo, setGeneralInfo] = useState({});
-  const [banner, setBanner] = useState("");
+  const [banners, setBanners] = useState([]);
 
   const loadData = () => {
     fb.collection("info")
@@ -28,10 +28,15 @@ const InformationContextProvider = (props) => {
           }
 
           if (obj && "count" in obj) {
+            let arr = [];
             if (obj.count) {
               try {
-                let url = await getImageUrl("banners", "banner" + (obj.count - 1));
-                setBanner(url);
+                for (let i = 0; i < obj.count; i++) {
+                  let url = await getImageUrl("banners", `banner${i}`);
+                  arr.push(url);
+                }
+                setBanners(arr);
+                console.log(arr);
               } catch (err) {
                 console.log(err);
               }
@@ -97,8 +102,8 @@ const InformationContextProvider = (props) => {
         setContactInfo,
         generalInfo,
         setGeneralInfo,
-        banner,
-        setBanner,
+        banners,
+        setBanners,
         offers,
         setOffers,
       }}
