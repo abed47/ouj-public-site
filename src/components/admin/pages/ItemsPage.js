@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { MDBDataTable, MDBRow, MDBCol } from "mdbreact";
-import { Editor } from "react-draft-wysiwyg";
-import { convertToRaw, convertFromRaw, EditorState } from "draft-js";
+import { MDBDataTable, MDBRow, MDBCol, MDBInput } from "mdbreact";
 import axios from "axios";
 
 //get firebase
@@ -66,14 +64,14 @@ const ItemsPage = () => {
 
   //add item constants
   const [itemImages, setItemImages] = useState({});
-  const [itemDescription, setItemDescription] = useState(EditorState.createEmpty());
+  const [itemDescription, setItemDescription] = useState("");
   const [itemMeasureUnit, setItemMeasureUnit] = useState("");
   const [itemName, setItemName] = useState("");
   const [itemPrice, setItemPrice] = useState(0);
 
   //edit item constants
   const [editItemImage, setEditItemImage] = useState({});
-  const [editItemDescription, setEditItemDescription] = useState(EditorState.createEmpty());
+  const [editItemDescription, setEditItemDescription] = useState("");
   const [editItemMeasureUnit, setEditItemMeasureUnit] = useState("");
   const [editItemName, setEditItemName] = useState("");
   const [editItemPrice, setEditItemPrice] = useState("");
@@ -135,9 +133,7 @@ const ItemsPage = () => {
           setLoadingModalOpen(false);
           let imageBuffer = Buffer.from(res.data, "binary").toString("base64");
           setEditItemImage({ 0: "data:image/png;base64," + imageBuffer });
-          setEditItemDescription(
-            EditorState.createWithContent(convertFromRaw(JSON.parse(editItem.description)))
-          );
+          setEditItemDescription(editItem.description);
           setEditItemName(editItem.name);
           setEditItemPrice(editItem.price);
           setEditItemMeasureUnit(editItem.unit);
@@ -163,7 +159,7 @@ const ItemsPage = () => {
   };
 
   const handleUpdateItem = () => {
-    let description = JSON.stringify(convertToRaw(editItemDescription.getCurrentContent()));
+    let description = editItemDescription;
     let name = editItemName;
     let price = editItemPrice;
     let image = editItemImage[0];
@@ -203,7 +199,7 @@ const ItemsPage = () => {
 
   const handleEditItemClose = () => {
     setEditItemImage({});
-    setEditItemDescription(EditorState.createEmpty());
+    setEditItemDescription("");
     setEditItemMeasureUnit("");
     setEditItemName("");
     setEditItemPrice(0);
@@ -242,7 +238,7 @@ const ItemsPage = () => {
 
   const handleAddItemClose = () => {
     setItemImages({});
-    setItemDescription(EditorState.createEmpty());
+    setItemDescription("");
     setItemMeasureUnit("");
     setItemName("");
     setItemPrice(0);
@@ -276,7 +272,7 @@ const ItemsPage = () => {
   };
 
   const handleCreateItem = () => {
-    let description = JSON.stringify(convertToRaw(itemDescription.getCurrentContent()));
+    let description = itemDescription;
     let name = itemName;
     let price = itemPrice;
     let image = itemImages[0];
@@ -415,13 +411,13 @@ const ItemsPage = () => {
               max={1}
             />
 
-            <Paper className="p-2">
-              <Editor
-                placeholder="Item description..."
-                editorState={itemDescription}
-                onEditorStateChange={setItemDescription}
-              />
-            </Paper>
+            <MDBInput
+              type="textarea"
+              label="Description"
+              onChange={(e) => setItemDescription(e.target.value)}
+              value={itemDescription}
+              rows="5"
+            />
           </div>
         </DialogContent>
         <DialogActions>
@@ -484,13 +480,13 @@ const ItemsPage = () => {
               max={1}
             />
 
-            <Paper className="p-2">
-              <Editor
-                placeholder="Item description..."
-                editorState={editItemDescription}
-                onEditorStateChange={setEditItemDescription}
-              />
-            </Paper>
+            <MDBInput
+              type="textarea"
+              label="Description"
+              onChange={(e) => setEditItemDescription(e.target.value)}
+              value={editItemDescription}
+              rows="5"
+            />
           </div>
         </DialogContent>
         <DialogActions>

@@ -10,7 +10,7 @@ import MuiAlert from "@material-ui/lab/Alert";
 import Snackbar from "@material-ui/core/Snackbar";
 
 //bootstrap item
-import { MDBContainer, MDBRow, MDBCard, MDBCol, MDBEdgeHeader } from "mdbreact";
+import { MDBContainer, MDBRow, MDBCard, MDBCol, MDBEdgeHeader, MDBInput } from "mdbreact";
 import TextField from "@material-ui/core/TextField";
 import Paper from "@material-ui/core/Paper";
 
@@ -92,6 +92,10 @@ const InfoPage = (props) => {
       }
 
       if (el.id == "general") {
+        let d = el.data;
+        setCaption1(d.caption1);
+        setCaption2(d.caption2);
+        setCaption3(d.caption3);
       }
     });
   };
@@ -140,10 +144,22 @@ const InfoPage = (props) => {
         count: imageList.length,
       })
       .then((res) => {
-        console.log(res);
+        updateGeneral();
       })
       .catch((err) => {
         console.log(err);
+      });
+  };
+
+  const updateGeneral = () => {
+    fb.collection("info")
+      .doc("general")
+      .update({ caption1, caption2, caption3 })
+      .then((res) => {
+        createAlert("success", "Data updated successfully");
+      })
+      .catch((err) => {
+        createAlert("error", "Error occurred, try again");
       });
   };
 
@@ -308,11 +324,33 @@ const InfoPage = (props) => {
         </MDBCol>
       </MDBRow>
 
-      <MDBRow className="my-3">
-        <MDBCol size="12">
-          <Paper className="p-2">
-            <Editor onEditorStateChange={setAboutUsDescription} placeholder="About Us Description"></Editor>
-          </Paper>
+      <MDBRow className="justify-content-around my-4">
+        <MDBCol size="3">
+          <MDBInput
+            type="textarea"
+            label="Footer Title"
+            onChange={(e) => setCaption1(e.target.value)}
+            value={caption1}
+            rows="5"
+          />
+        </MDBCol>
+        <MDBCol size="3">
+          <MDBInput
+            type="textarea"
+            label="Caption 2"
+            onChange={(e) => setCaption2(e.target.value)}
+            value={caption2}
+            rows="5"
+          />
+        </MDBCol>
+        <MDBCol size="3">
+          <MDBInput
+            type="textarea"
+            label="Captions 3"
+            onChange={(e) => setCaption3(e.target.value)}
+            value={caption3}
+            rows="5"
+          />
         </MDBCol>
       </MDBRow>
 
