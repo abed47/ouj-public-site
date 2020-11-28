@@ -13,7 +13,7 @@ const Promo = (props) => {
         <MDBCol size="6" className="m-0 p-0">
           <div className="promo-container_description">
             <h2 className="_title">{props.title}</h2>
-            <p className="_description">{props.description}</p>
+            <p className="_description mt-2" dangerouslySetInnerHTML={{ __html: props.description }}></p>
           </div>
         </MDBCol>
       </>
@@ -25,7 +25,7 @@ const Promo = (props) => {
       <MDBCol size="6" className="m-0 p-0">
         <div className="promo-container_description">
           <h2 className="_title">{props.title}</h2>
-          <p className="_description">{props.description}</p>
+          <p className="_description mt-2" dangerouslySetInnerHTML={{ __html: props.description }}></p>
         </div>
       </MDBCol>
       <MDBCol size="6" className="m-0 p-0">

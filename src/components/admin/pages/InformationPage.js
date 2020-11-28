@@ -19,6 +19,11 @@ function Alert(props) {
 }
 
 const InfoPage = (props) => {
+  const crop = {
+    unit: "%",
+    width: "100",
+    aspect: 16 / 16,
+  };
   const [docId, setDocId] = useState("");
   const [bannerImages, setBannerImages] = useState({});
   //alert state
@@ -220,12 +225,7 @@ const InfoPage = (props) => {
             images={bannerImages}
             setImages={setBannerImages}
             cropConfig={{
-              crop: {
-                unit: "%",
-                aspect: 1 / 1,
-                width: "100",
-              },
-              ruleOfThirds: true,
+              crop,
             }}
             max={5}
           />

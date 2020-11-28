@@ -7,13 +7,15 @@ const InformationContextProvider = (props) => {
   const fb = firebase.firestore();
 
   const [items, setItems] = useState([]);
+  const [offers, setOffers] = useState([]);
   const [contactInfo, setContactInfo] = useState({});
   const [generalInfo, setGeneralInfo] = useState({});
+  const [banner, setBanner] = useState("");
 
   const loadData = () => {
     fb.collection("info")
       .get()
-      .then(({ docs }) => {
+      .then(async ({ docs }) => {
         for (let i = 0; i < docs.length; i++) {
           let obj = docs[i].data();
 
@@ -24,7 +26,21 @@ const InformationContextProvider = (props) => {
           if (obj && "caption1" in obj) {
             setGeneralInfo(obj);
           }
+
+          if (obj && "count" in obj) {
+            if (obj.count) {
+              try {
+                let url = await getImageUrl("banners", "banner" + (obj.count - 1));
+                setBanner(url);
+              } catch (err) {
+                console.log(err);
+              }
+            }
+          }
         }
+      })
+      .catch((err) => {
+        console.log(err);
       });
 
     fb.collection("items")
@@ -33,18 +49,32 @@ const InformationContextProvider = (props) => {
         let arr = [];
         for (let i = 0; i < docs.length; i++) {
           let obj = docs[i].data();
-          obj.imgUrl = await getImageUrl(obj.imageName);
+          obj.imgUrl = await getImageUrl("items", obj.imageName);
           arr.push(obj);
         }
 
         setItems(arr);
       });
+
+    fb.collection("offers")
+      .get()
+      .then(async ({ docs }) => {
+        let arr = [];
+        for (let i = 0; i < docs.length; i++) {
+          let obj = docs[i].data();
+          obj.imgUrl = await getImageUrl("offers", obj.imageName);
+          console.log(obj.imgUrl);
+          arr.push(obj);
+        }
+
+        setOffers(arr);
+      });
   };
 
-  const getImageUrl = (url) => {
+  const getImageUrl = (type, url) => {
     return new Promise((resolve, reject) => {
       fs.ref()
-        .child("/items/" + url + ".png")
+        .child(`/${type}/` + url + ".png")
         .getDownloadURL()
         .then((res) => {
           resolve(res);
@@ -57,11 +87,21 @@ const InformationContextProvider = (props) => {
 
   useEffect(() => {
     loadData();
-    console.log("data loaded");
   }, []);
   return (
     <InformationContext.Provider
-      value={{ items, setItems, contactInfo, setContactInfo, generalInfo, setGeneralInfo }}
+      value={{
+        items,
+        setItems,
+        contactInfo,
+        setContactInfo,
+        generalInfo,
+        setGeneralInfo,
+        banner,
+        setBanner,
+        offers,
+        setOffers,
+      }}
     >
       {props.children}
     </InformationContext.Provider>

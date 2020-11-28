@@ -11,8 +11,7 @@ import { Link } from "react-router-dom";
 
 const Footer = (props) => {
   return (
-    <MDBRow className="footer m-0">
-      <img src={heroTop} alt="" className="footer-top-img" />
+    <MDBRow className="footer mt-5">
       <MDBCol sm="5" md="5" className="footer-col">
         <h1 className="footer-title">{props.caption1}</h1>
         <p className="footer-description">{props.caption2}</p>
@@ -33,17 +32,12 @@ const Footer = (props) => {
       </MDBCol>
       <MDBCol sm="5" md="3" lg="2" className="footer-col">
         <h1 className="footer-title">About</h1>
-        <Link to="#">History</Link>
-        <Link to="#">Our Team</Link>
+        <Link to="/contact-us">Contact Us</Link>
+        <Link to="#">Help</Link>
       </MDBCol>
       <MDBCol sm="12" md="3" lg="2" className="footer-col">
         <h1 className="footer-title">Services</h1>
         <Link to="/products">Our Products</Link>
-      </MDBCol>
-      <MDBCol sm="12" md="3" lg="2" className="footer-col">
-        <h1 className="footer-title">Other</h1>
-        <Link to="/contact-us">Contact Us</Link>
-        <Link to="#">Help</Link>
       </MDBCol>
     </MDBRow>
   );

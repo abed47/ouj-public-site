@@ -78,6 +78,11 @@ body {
   box-shadow: none !important;
 }
 
+.primary-bg {
+  background-color: $color-primary !important;
+  color: white;
+}
+
 .hero {
   height: 70%;
   background-image: url("../images/herobg.png");
@@ -141,12 +146,13 @@ body {
 
 .show-more-products {
   box-sizing: border-box;
-  padding: 15px 25px;
-  background: #7f7770;
+  padding: 15px 40px;
+  background: $color-primary;
+  font-family: open-sans-extrabold;
   color: white;
   border-radius: 25px;
   display: inline;
-  font-size: 1rem;
+  font-size: 0.9rem;
   word-spacing: 1px;
   letter-spacing: 2px;
 }
@@ -158,14 +164,16 @@ body {
 
 .promo-container {
   color: white;
+
   &_image {
     img {
       width: 100%;
+      max-height: 40vw;
     }
   }
 
   &_description {
-    background-color: #9f9fca;
+    background-color: $color-primary;
     color: white;
     box-sizing: border-box;
     padding: 50px;
@@ -187,7 +195,7 @@ body {
 }
 
 .footer {
-  background-color: #33348e;
+  background-color: $color-primary;
   color: white;
   box-sizing: border-box;
   padding: 50px 0;
@@ -200,7 +208,7 @@ body {
     width: 100%;
     min-width: 900px;
     top: -5em;
-    background-color: #33348e;
+    background-color: $color-primary;
   }
 
   & &-col {
@@ -326,7 +334,7 @@ body {
     }
 
     &_description {
-      background-color: #9f9fca;
+      background-color: $color-primary;
       color: white;
       box-sizing: border-box;
       display: flex;
@@ -355,7 +363,7 @@ body {
       width: 100%;
       min-width: 900px;
       top: -35%;
-      background-color: #33348e;
+      background-color: $color-primary;
     }
   }
 }
@@ -367,7 +375,7 @@ body {
       width: 100%;
       min-width: 900px;
       top: -50%;
-      background-color: #33348e;
+      background-color: $color-primary;
     }
   }
 }

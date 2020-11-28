@@ -10,11 +10,15 @@ import PromoCard from "./UI/PromoElement";
 import NavBar from "./UI/NavBar";
 import Footer from "./UI/Footer";
 import { InformationContext } from "./context/InformationContext";
+import { convertToRaw } from "draft-js";
+import convertToHtml from "draftjs-to-html";
 const Home = (props) => {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);
   const [contact, setContact] = useState({});
+  const [banner, setBanner] = useState(heroBg);
   const [info, setInfo] = useState({});
+  const [offers, setOffers] = useState([]);
   const context = useContext(InformationContext);
 
   const loadData = () => {
@@ -32,11 +36,19 @@ const Home = (props) => {
     let itemsArr = context.items;
     let arr = [];
     for (let i = 0; i < itemsArr.length && i < 3; i++) {
-      console.log(itemsArr[i]);
       arr.push(itemsArr[i]);
     }
     setItems(itemsArr);
-    console.log(items);
+    if (context.banner) setBanner(context.banner);
+    if (context.offers) setOffers(context.offers);
+  };
+
+  const convertPromoDescription = (data) => {
+    let d = JSON.parse(data);
+    // let raw = convertToRaw(d);
+    let html = convertToHtml(d);
+    console.log(html);
+    return html;
   };
 
   useEffect(() => {
@@ -47,9 +59,7 @@ const Home = (props) => {
     <>
       <NavBar />
       <MDBRow className="hero2 m-0">
-        <img src={heroTop} alt="" className="hero-top" />
-        <img src={heroBg} alt="" className="hero-img" />
-        <img src={heroBottom} alt="" className="hero-bottom" />
+        <img src={banner} alt="" className="hero-img" />
       </MDBRow>
       <MDBRow center className="product-section m-0">
         <MDBCol size="12" className="text-center">
@@ -59,13 +69,14 @@ const Home = (props) => {
           </div>
         </MDBCol>
 
-        {items.map((item) => {
+        {items.map((item, i) => {
+          if (i > 2) return;
           return (
             <ProductCard
               key={item.id}
               imgUrl={item.imgUrl}
               itemTitle={item.name}
-              itemBody="item short descripiton"
+              itemBody={item.description}
               md="4"
               lg="3"
               sm="8"
@@ -75,25 +86,23 @@ const Home = (props) => {
         })}
 
         <MDBCol size="12" className="text-center show-more">
-          <Link to="/product">
+          <Link to="/products">
             <h2 className="show-more-products">Show More</h2>
           </Link>
         </MDBCol>
       </MDBRow>
 
       <MDBRow className="m-0 p-0 promo-section">
-        <PromoCard
-          imgUrl="https://via.placeholder.com/400"
-          title="title 1"
-          description="helo world lksdfjdslafksadfjkdaslf;jasrfl"
-          direction="left"
-        />
-        <PromoCard
-          imgUrl="https://via.placeholder.com/400"
-          title="title 1"
-          description="helo world lksdfjdslafksadfjkdaslf;jasrfl"
-          direction="right"
-        />
+        {offers.map((offer, i) => {
+          return (
+            <PromoCard
+              imgUrl={offer.imgUrl}
+              title={offer.title}
+              description={convertPromoDescription(offer.description)}
+              direction={`${i % 2}` == 0 ? "right" : "left"}
+            />
+          );
+        })}
       </MDBRow>
       <Footer
         wa={"https://wa.me/961" + contact.phone1}
