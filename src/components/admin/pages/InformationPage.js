@@ -22,7 +22,7 @@ const InfoPage = (props) => {
   const crop = {
     unit: "%",
     width: "100",
-    aspect: 16 / 16,
+    height: "100",
   };
   const [docId, setDocId] = useState("");
   const [bannerImages, setBannerImages] = useState({});

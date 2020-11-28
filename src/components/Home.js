@@ -59,7 +59,7 @@ const Home = (props) => {
         <MDBCol size="12" className="m-0 p-0 h-50 slider-container">
           <MDBCarousel
             activeItem={1}
-            length={3}
+            length={banners.length}
             showControls={true}
             showIndicators={false}
             className="z-depth-1"
