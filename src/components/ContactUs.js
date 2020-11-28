@@ -1,11 +1,26 @@
-import React from "react";
+import React, { useEffect, useContext, useState } from "react";
 import NavBar from "./UI/NavBar";
 import Footer from "./UI/Footer";
 import { MDBRow, MDBCol } from "mdbreact";
 import ContactUsBG from "../assets/images/aboutus-bg.png";
 import { Link } from "react-router-dom";
 import { MailIcon, PhoneIcon } from "./UI/Icons";
+import { InformationContext } from "./context/InformationContext";
 const ContactUs = (props) => {
+  const context = useContext(InformationContext);
+
+  const [contact, setContact] = useState({});
+  const [info, setInfo] = useState({});
+
+  const loadData = () => {
+    if (context.generalInfo) setInfo(context.generalInfo);
+    if (context.contactInfo) setContact(context.contactInfo);
+  };
+
+  useEffect(() => {
+    loadData();
+  }, []);
+
   const phone = (val) => {
     if (val)
       return (
@@ -35,12 +50,20 @@ const ContactUs = (props) => {
         <MDBCol size="12" className="p-0 contact-us_section">
           <h1>Contact Us</h1>
           <ul>
-            <li>{phone(76402094)}</li>
-            <li>{email("abed472011@gmail.com")}</li>
+            {contact.phone1 ? <li>{phone(contact.phone1)}</li> : ""}
+            {contact.phone2 ? <li>{phone(contact.phone2)}</li> : ""}
+            {contact.email ? <li>{email(contact.email)}</li> : ""}
           </ul>
         </MDBCol>
       </MDBRow>
-      <Footer />
+      <Footer
+        caption1={info.caption1}
+        caption2={info.caption2}
+        wa={contact.phone1}
+        fb={contact.facebook}
+        insta={contact.instagram}
+        twitter={contact.twitter}
+      />
     </>
   );
 };

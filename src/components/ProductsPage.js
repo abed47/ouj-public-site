@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import NavBar from "./UI/NavBar";
 import Footer from "./UI/Footer";
 import { MDBRow, MDBCol } from "mdbreact";
@@ -6,47 +6,29 @@ import ContactUsBG from "../assets/images/aboutus-bg.png";
 import LoadingPage from "./UI/LoadingPage";
 import firebase from "../utils/firebase";
 import ProductCard from "./UI/ProductCard";
+import { InformationContext } from "./context/InformationContext";
 const ProductsPage = (props) => {
-  const itemsRef = firebase.firestore().collection("items");
-  const fs = firebase.storage();
+  const context = useContext(InformationContext);
 
   const [loading, setLoading] = useState(false);
   const [items, setItems] = useState([]);
-  let temp = [];
+  const [info, setInfo] = useState({});
+  const [contact, setContact] = useState({});
 
   const loadData = () => {
-    setLoading(true);
-    let itemsHolder = [];
-    itemsRef
-      .get()
-      .then(async ({ docs }) => {
-        for (let i = 0; i < docs.length; i++) {
-          let obj = docs[i].data();
-          await obj;
-          obj.image = await getImageUrl(obj.imageName);
-          itemsHolder.push(obj);
-        }
+    if (context.items) {
+      setLoading(true);
+      setItems(context.items);
+      setLoading(false);
+    }
 
-        setItems(itemsHolder);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
+    if (context.generalInfo) {
+      setInfo(context.generalInfo);
+    }
 
-  const getImageUrl = (v) => {
-    return new Promise((resolve, reject) => {
-      fs.ref()
-        .child("items/" + v + ".png")
-        .getDownloadURL()
-        .then((res) => {
-          resolve(res);
-        })
-        .catch((err) => {
-          reject(err);
-        });
-    });
+    if (context.contactInfo) {
+      setContact(context.contactInfo);
+    }
   };
 
   useEffect(() => {
@@ -58,12 +40,8 @@ const ProductsPage = (props) => {
       {loading ? <LoadingPage /> : ""}
 
       <NavBar />
-      <MDBRow className="m-0 p-0">
-        <MDBCol size="12" className="p-0 contact-us_hero">
-          <img src={ContactUsBG} alt="" />
-        </MDBCol>
-
-        <MDBCol size="12" className="p-0 contact-us_section">
+      <MDBRow className="mx-0 my-5 p-0">
+        <MDBCol size="12" className="p-0 my-5 contact-us_section">
           <h1>Our Products</h1>
         </MDBCol>
       </MDBRow>
@@ -75,13 +53,20 @@ const ProductsPage = (props) => {
             lg="3"
             sm="10"
             key={i.id}
-            imgUrl={i.image}
+            imgUrl={i.imgUrl}
             itemTitle={i.name}
             itemBody={"please work loreasdfl;jksdafjsald;fjsda"}
           />
         ))}
       </MDBRow>
-      <Footer />
+      <Footer
+        caption1={info.caption1}
+        caption2={info.caption2}
+        wa={contact.phone1}
+        insta={contact.instagram}
+        fb={contact.facebook}
+        twitter={contact.twitter}
+      />
     </>
   );
 };

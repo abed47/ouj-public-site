@@ -69,6 +69,7 @@
     "react-draft-wysiwyg": "^1.14.5",
     "react-multiple-image-input": "^1.0.0",
     "react-refresh": "^0.8.3",
+    "react-responsive-carousel": "^3.2.10",
     "react-router-dom": "^5.2.0",
     "resolve": "1.18.1",
     "resolve-url-loader": "^3.1.2",
