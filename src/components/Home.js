@@ -9,10 +9,11 @@ import NavBar from "./UI/NavBar";
 import Footer from "./UI/Footer";
 import { InformationContext } from "./context/InformationContext";
 import convertToHtml from "draftjs-to-html";
+import LoadingPage from "./UI/LoadingPage";
 
 const Home = (props) => {
   const [items, setItems] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [contact, setContact] = useState({});
   const [banners, setBanners] = useState([]);
   const [info, setInfo] = useState({});
@@ -22,6 +23,7 @@ const Home = (props) => {
   const loadData = () => {
     loadItems();
     loadContact();
+    setLoading(context.loading);
   };
 
   const loadContact = () => {
@@ -55,6 +57,7 @@ const Home = (props) => {
   return (
     <>
       <NavBar />
+      {loading ? <LoadingPage /> : ""}
       <MDBRow className="m-0 mb-5 p-0 ">
         <MDBCol size="12" className="m-0 p-0 h-50 slider-container">
           <MDBCarousel
@@ -68,7 +71,7 @@ const Home = (props) => {
             <MDBCarouselInner>
               {banners.map((banner, i) => {
                 return (
-                  <MDBCarouselItem key={i} itemId={i + 1}>
+                  <MDBCarouselItem key={"banner" + Math.random()} itemId={i + 1}>
                     <MDBView>
                       <img className="d-block w-100" src={banner} />
                     </MDBView>
@@ -91,7 +94,7 @@ const Home = (props) => {
           if (i > 2) return;
           return (
             <ProductCard
-              key={item.id}
+              key={i}
               imgUrl={item.imgUrl}
               itemTitle={item.name}
               itemBody={item.description}
@@ -114,6 +117,7 @@ const Home = (props) => {
         {offers.map((offer, i) => {
           return (
             <PromoCard
+              key={i}
               imgUrl={offer.imgUrl}
               title={offer.title}
               description={convertPromoDescription(offer.description)}

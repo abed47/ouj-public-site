@@ -6,6 +6,7 @@ const InformationContextProvider = (props) => {
   const fs = firebase.storage();
   const fb = firebase.firestore();
 
+  const [loading, setLoading] = useState(true);
   const [items, setItems] = useState([]);
   const [offers, setOffers] = useState([]);
   const [contactInfo, setContactInfo] = useState({});
@@ -36,9 +37,10 @@ const InformationContextProvider = (props) => {
                   arr.push(url);
                 }
                 setBanners(arr);
-                console.log(arr);
+                setLoading(false);
               } catch (err) {
                 console.log(err);
+                setLoading(false);
               }
             }
           }
@@ -46,6 +48,7 @@ const InformationContextProvider = (props) => {
       })
       .catch((err) => {
         console.log(err);
+        setLoading(false);
       });
 
     fb.collection("items")
@@ -68,11 +71,11 @@ const InformationContextProvider = (props) => {
         for (let i = 0; i < docs.length; i++) {
           let obj = docs[i].data();
           obj.imgUrl = await getImageUrl("offers", obj.imageName);
-          console.log(obj.imgUrl);
           arr.push(obj);
         }
 
         setOffers(arr);
+        setLoading(false);
       });
   };
 
@@ -106,6 +109,7 @@ const InformationContextProvider = (props) => {
         setBanners,
         offers,
         setOffers,
+        loading,
       }}
     >
       {props.children}

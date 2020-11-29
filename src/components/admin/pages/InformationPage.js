@@ -136,7 +136,7 @@ const InfoPage = (props) => {
         .child(`/banners/banner${item}.png`)
         .putString(bannerImages[item], "data_url")
         .then((res) => {
-          console.log(res);
+          console.log("updated");
         })
         .catch((err) => {
           console.log(err);
@@ -185,8 +185,6 @@ const InfoPage = (props) => {
     }
 
     imageUrls.forEach((el, index) => {
-      console.log("hell");
-      console.log(el);
       axios
         .get(el, { responseType: "arraybuffer" })
         .then((res) => {
@@ -194,7 +192,6 @@ const InfoPage = (props) => {
           let buff = Buffer.from(res.data, "binary").toString("base64");
           obj[index] = "data:image/png;base64," + buff;
 
-          console.log(res.data);
           setBannerImages({ ...obj });
         })
         .catch((err) => {

@@ -120,8 +120,6 @@ const ItemsPage = () => {
     setSelectedItemId(id);
     let editItem = items.filter((el) => el.id == id)[0];
     if (editItem) {
-      console.log(editItem);
-
       let url = await fs
         .ref()
         .child("/items/" + editItem.imageName + ".png")

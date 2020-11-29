@@ -1,50 +1,51 @@
+@import "_fonts";
 @font-face {
-  font-family: open-sans-regular;
+  font-family: "open-sans-regular";
   src: url("./../fonts/OpenSans-Light.ttf");
 }
 
 @font-face {
-  font-family: open-sans-bold;
+  font-family: "open-sans-bold";
   src: url("./../fonts/OpenSans-Bold.ttf");
 }
 
 @font-face {
-  font-family: open-sans-semibold;
+  font-family: "open-sans-semibold";
   src: url("./../fonts/OpenSans-SemiBold.ttf");
 }
 
 @font-face {
-  font-family: open-sans-light;
+  font-family: "open-sans-light";
   src: url("./../fonts/OpenSans-Light.ttf");
 }
 
 @font-face {
-  font-family: open-sans-extrabold;
+  font-family: "open-sans-extrabold";
   src: url("./../fonts/OpenSans-ExtraBold.ttf");
 }
 
 @font-face {
-  font-family: montserrat-regular;
+  font-family: "montserrat-regular";
   src: url("./../fonts/Montserrat-Regular.ttf");
 }
 
 @font-face {
-  font-family: montserrat-bold;
+  font-family: "montserrat-bold";
   src: url("./../fonts//Montserrat-Bold.ttf");
 }
 
 @font-face {
-  font-family: montserrat-italic;
+  font-family: "montserrat-italic";
   src: url("./../fonts/Montserrat-Italic.ttf");
 }
 
 @font-face {
-  font-family: montserrat-light;
+  font-family: "montserrat-light";
   src: url("./../fonts/Montserrat-Light.ttf");
 }
 
 @font-face {
-  font-family: montserrat-semibold;
+  font-family: "montserrat-semibold";
   src: url("./../fonts/Montserrat-SemiBold.ttf");
 }
 
@@ -148,7 +149,7 @@ body {
   box-sizing: border-box;
   padding: 15px 40px;
   background: $color-primary;
-  font-family: open-sans-extrabold;
+  font-family: "open-sans-extrabold";
   color: white;
   border-radius: 25px;
   display: inline;
@@ -174,6 +175,8 @@ body {
 
   &_description {
     background-color: $color-primary;
+    font-family: "open-sans-regular";
+    font-size: 1.2em;
     color: white;
     box-sizing: border-box;
     padding: 50px;
@@ -190,6 +193,7 @@ body {
     ._title {
       font-weight: 700;
       font-size: 3rem;
+      font-family: "open-sans-bold";
     }
   }
 }
@@ -202,6 +206,7 @@ body {
   padding-top: 70px;
   position: relative;
   overflow: hidden;
+  font-family: "montserrat-regular" !important;
 
   &-top-img {
     position: absolute;
@@ -219,13 +224,14 @@ body {
 
   &-title {
     font-size: 1.5rem;
-    font-weight: 400;
+    font-family: "montserrat-regular" !important;
     box-sizing: border-box;
     padding: 0 50px;
   }
 
   &-description {
     font-size: 0.9rem;
+    font-family: "montserrat-regular";
     box-sizing: border-box;
     padding: 0 50px;
   }
@@ -292,6 +298,16 @@ body {
         }
       }
     }
+  }
+}
+
+.product-card {
+  &_title {
+    font-family: "open-sans-bold" !important;
+  }
+
+  &_description {
+    font-family: "open-sans-regular" !important;
   }
 }
 

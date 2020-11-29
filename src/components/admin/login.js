@@ -15,7 +15,7 @@ import MuiAlert from "@material-ui/lab/Alert";
 
 import LoadingPage from "../UI/LoadingPage";
 
-import logo from "../../assets/images/logo.jpg";
+import logo from "../../assets/images/ouj.png";
 import "../../assets/styles/Admin.scss";
 
 import { useHistory } from "react-router-dom";

@@ -124,8 +124,6 @@ const OffersPage = () => {
     setSelectedOfferId(id);
     let editOffer = items.filter((el) => el.id == id)[0];
     if (editOffer) {
-      console.log(editOffer);
-
       let url = await fs
         .ref()
         .child("/offers/" + editOffer.imageName + ".png")

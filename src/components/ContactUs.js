@@ -6,15 +6,19 @@ import ContactUsBG from "../assets/images/aboutus-bg.png";
 import { Link } from "react-router-dom";
 import { MailIcon, PhoneIcon } from "./UI/Icons";
 import { InformationContext } from "./context/InformationContext";
+import "../assets/styles/App.scss";
+
 const ContactUs = (props) => {
   const context = useContext(InformationContext);
 
   const [contact, setContact] = useState({});
   const [info, setInfo] = useState({});
+  const [banners, setBanners] = useState([]);
 
   const loadData = () => {
     if (context.generalInfo) setInfo(context.generalInfo);
     if (context.contactInfo) setContact(context.contactInfo);
+    if (context.banners) setBanners(context.banners);
   };
 
   useEffect(() => {
@@ -44,11 +48,11 @@ const ContactUs = (props) => {
       <NavBar />
       <MDBRow className="m-0 p-0">
         <MDBCol size="12" className="p-0 contact-us_hero">
-          <img src={ContactUsBG} alt="" />
+          <img src={banners[0]} alt="" />
         </MDBCol>
 
         <MDBCol size="12" className="p-0 contact-us_section">
-          <h1>Contact Us</h1>
+          <h1 className="m-5">Contact Us</h1>
           <ul>
             {contact.phone1 ? <li>{phone(contact.phone1)}</li> : ""}
             {contact.phone2 ? <li>{phone(contact.phone2)}</li> : ""}
