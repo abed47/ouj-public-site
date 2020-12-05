@@ -18,7 +18,7 @@ function Routes() {
         <InformationContextProvider>
           <Route path="/contact-us" exact={true} component={ContactUs} />
           <Route path="/products" exact={true} component={ProductsPage} />
-          <Route path="/admin-login" exact={true} component={AdminLogin} />
+          <Route path="/admin-login" component={AdminLogin} />
           <Route path="/" exact={true} component={Home} />
           <ProtectedAdminRoute path="/admin" component={AdminHome} />
         </InformationContextProvider>
