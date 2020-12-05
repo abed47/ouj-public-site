@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
 import ReactDom from "react-dom";
-import heroBg from "../assets/images/herobg.png";
 import { MDBRow, MDBCol, MDBCarousel, MDBCarouselItem, MDBView, MDBCarouselInner } from "mdbreact";
 import { Link } from "react-router-dom";
 import ProductCard from "./UI/ProductCard";
@@ -45,13 +44,13 @@ const Home = (props) => {
 
   const convertPromoDescription = (data) => {
     let d = JSON.parse(data);
-    // let raw = convertToRaw(d);
     let html = convertToHtml(d);
     return html;
   };
 
   useEffect(() => {
     loadData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [context]);
 
   return (
@@ -73,7 +72,7 @@ const Home = (props) => {
                 return (
                   <MDBCarouselItem key={"banner" + Math.random()} itemId={i + 1}>
                     <MDBView>
-                      <img className="d-block w-100" src={banner} />
+                      <img className="d-block w-100" src={banner} alt="" />
                     </MDBView>
                   </MDBCarouselItem>
                 );
@@ -91,10 +90,10 @@ const Home = (props) => {
         </MDBCol>
 
         {items.map((item, i) => {
-          if (i > 2) return;
+          if (i > 2) return "";
           return (
             <ProductCard
-              key={i}
+              key={i + "aOuj"}
               imgUrl={item.imgUrl}
               itemTitle={item.name}
               itemBody={item.description}
@@ -117,11 +116,11 @@ const Home = (props) => {
         {offers.map((offer, i) => {
           return (
             <PromoCard
-              key={i}
+              key={i + "aouj"}
               imgUrl={offer.imgUrl}
               title={offer.title}
               description={convertPromoDescription(offer.description)}
-              direction={`${i % 2}` == 0 ? "right" : "left"}
+              direction={`${i % 2}` === "0" ? "right" : "left"}
             />
           );
         })}

@@ -1,22 +1,28 @@
-import React from "react";
-import Home from "../components/Home";
-import ContactUs from "../components/ContactUs";
-import ProductsPage from "../components/ProductsPage";
+import React, { Suspense, lazy } from "react";
+
 import AdminHome from "../components/admin/AdminHome";
-import AdminLogin from "../components/admin/login";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import ProtectedAdminRoute from "./AdminProtectedRoute";
+import { BrowserRouter as Router, Route } from "react-router-dom";
 import InformationContextProvider from "../components/context/InformationContext";
+import LoadingPage from "../components/UI/LoadingPage";
+
+const Home = lazy(() => import("../components/Home"));
+const ContactUs = lazy(() => import("../components/ContactUs"));
+const ProductsPage = lazy(() => import("../components/ProductsPage"));
+const AdminLogin = lazy(() => import("../components/admin/login"));
+const ProtectedAdminRoute = lazy(() => import("./AdminProtectedRoute"));
+
 function Routes() {
   return (
     <Router>
-      <InformationContextProvider>
-        <Route path="/" exact={true} component={Home} />
-        <Route path="/contact-us" exact={true} component={ContactUs} />
-        <Route path="/products" exact={true} component={ProductsPage} />
-      </InformationContextProvider>
-      <ProtectedAdminRoute path="/admin" component={AdminHome} />
-      <Route path="/admin-login" component={AdminLogin} />
+      <Suspense fallback={LoadingPage}>
+        <InformationContextProvider>
+          <Route path="/contact-us" exact={true} component={ContactUs} />
+          <Route path="/products" exact={true} component={ProductsPage} />
+          <Route path="/admin-login" exact={true} component={AdminLogin} />
+          <Route path="/" exact={true} component={Home} />
+          <ProtectedAdminRoute path="/admin" component={AdminHome} />
+        </InformationContextProvider>
+      </Suspense>
     </Router>
   );
 }

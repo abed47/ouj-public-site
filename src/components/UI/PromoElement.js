@@ -2,7 +2,7 @@ import React from "react";
 import { MDBCol } from "mdbreact";
 
 const Promo = (props) => {
-  if (props.direction == "left") {
+  if (props.direction === "left") {
     return (
       <>
         <MDBCol size="6" className="m-0 p-0">

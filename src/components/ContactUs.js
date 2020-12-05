@@ -2,8 +2,6 @@ import React, { useEffect, useContext, useState } from "react";
 import NavBar from "./UI/NavBar";
 import Footer from "./UI/Footer";
 import { MDBRow, MDBCol } from "mdbreact";
-import ContactUsBG from "../assets/images/aboutus-bg.png";
-import { Link } from "react-router-dom";
 import { MailIcon, PhoneIcon } from "./UI/Icons";
 import { InformationContext } from "./context/InformationContext";
 import "../assets/styles/App.scss";
@@ -23,6 +21,7 @@ const ContactUs = (props) => {
 
   useEffect(() => {
     loadData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const phone = (val) => {

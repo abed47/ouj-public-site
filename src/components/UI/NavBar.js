@@ -7,14 +7,8 @@ import {
   MDBNavLink,
   MDBNavbarToggler,
   MDBCollapse,
-  MDBDropdown,
-  MDBDropdownToggle,
-  MDBDropdownMenu,
-  MDBDropdownItem,
-  MDBIcon,
 } from "mdbreact";
 
-import ReactDom from "react-dom";
 import oujLogo from "../../assets/images/ouj.png";
 
 const NavBar = (props) => {

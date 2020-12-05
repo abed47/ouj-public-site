@@ -1,7 +1,4 @@
 import React from "react";
-import heroTop from "../../assets/images/hero-top.png";
-import heroBottom from "../../assets/images/hero-bottom.png";
-import heroBg from "../../assets/images/herobg.png";
 import whatsAppIcon from "../../assets/images/whatsapp-icon.png";
 import instagramIcon from "../../assets/images/instagram-icon.png";
 import facebookIcon from "../../assets/images/fb-icon.png";

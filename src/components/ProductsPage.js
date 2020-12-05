@@ -2,9 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import NavBar from "./UI/NavBar";
 import Footer from "./UI/Footer";
 import { MDBRow, MDBCol } from "mdbreact";
-import ContactUsBG from "../assets/images/aboutus-bg.png";
 import LoadingPage from "./UI/LoadingPage";
-import firebase from "../utils/firebase";
 import ProductCard from "./UI/ProductCard";
 import { InformationContext } from "./context/InformationContext";
 const ProductsPage = (props) => {
@@ -33,6 +31,7 @@ const ProductsPage = (props) => {
 
   useEffect(() => {
     loadData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
